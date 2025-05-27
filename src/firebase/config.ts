@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, RecaptchaVerifier } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Replace with your Firebase configuration
@@ -20,5 +20,36 @@ export const auth = getAuth(app);
 
 // Initialize Firestore and get a reference to the service
 export const db = getFirestore(app);
+
+let recaptchaVerifier: RecaptchaVerifier | null = null;
+
+export const initRecaptcha = () => {
+    if (recaptchaVerifier) {
+        recaptchaVerifier.clear();
+    }
+
+    recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "normal",
+        callback: () => {
+            // reCAPTCHA solved
+        },
+        "expired-callback": () => {
+            // Response expired. Ask user to solve reCAPTCHA again.
+            if (recaptchaVerifier) {
+                recaptchaVerifier.clear();
+                recaptchaVerifier = null;
+            }
+        },
+    });
+
+    return recaptchaVerifier;
+};
+
+export const clearRecaptcha = () => {
+    if (recaptchaVerifier) {
+        recaptchaVerifier.clear();
+        recaptchaVerifier = null;
+    }
+};
 
 export default app;
