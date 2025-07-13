@@ -1,4 +1,6 @@
-# Firebase Feedback Application
+# Feedback Application 📘
+
+![Hero Image](/.github/docs/feedback-webapp.png)
 
 A simple, single-page application built with React, Firebase, and Zod for form validation. The application allows users to:
 
